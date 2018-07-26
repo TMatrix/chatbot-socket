@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Chat | Socket.io</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous"> 
+  <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="chat-body.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="enter-page">
+    <div class="form">
+      <h1 class="message">Enter to the Chat</h1>
+      <div class="enter-form">
+        <input type="text" id="nameInput" placeholder="Name"/>
+        <input type="text" id="nickInput" placeholder="Nickname"/>
+        <input type="button" value="OK" id="enterButton">
+      </div>
+    </div>
+  </div>
+  <div class="container clearfix">
+      <div class="people-list" id="people-list">
+        <ul class="list" id="peopleList">
+          <!-- <li class="clearfix">
+            <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/195612/chat_avatar_08.jpg" alt="avatar" />
+            <div class="about">
+              <div class="name">Monica Ward</div>
+              <div class="status">
+                <i class="fa fa-circle online"></i> online
+              </div>
+            </div>
+          </li> -->
+        </ul>
+      </div>
+      
+      <div class="chat">
+        <div class="chat-history">
+          <ul id="messages">
+            <!-- <li class="clearfix">
+              <div class="message-data align-right">
+                <span class="message-data-time" >10:10 AM, Today</span> &nbsp; &nbsp;
+                <span class="message-data-name" >Olia</span>
+                <i class="fa fa-circle me"></i>
+              </div>
+              <div class="message other-message float-right">
+                Hi Vincent, how are you? How is the project coming along?
+              </div>
+            </li>
+-->
+          </ul>
+        </div> <!-- end chat-history -->
+        
+        <div class="chat-message clearfix">
+          <textarea name="message-to-send" id="message-to-send" placeholder ="Type your message" rows="3"></textarea>
+          <button id="textSubmit">Send</button>
+        </div> <!-- end chat-message -->
+      </div> <!-- end chat -->
+    </div> <!-- end container -->
+  
+    <script src="/socket.io/socket.io.js"></script>
+  <script src="/script.js"></script>
+</body>
+</html>
