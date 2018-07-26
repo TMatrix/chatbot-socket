@@ -1,4 +1,4 @@
-(function(){
+(function () {
   let nameInput = document.getElementById("nameInput");
   let nickInput = document.getElementById("nickInput");
   let enterButton = document.getElementById("enterButton");
@@ -19,7 +19,7 @@
     userName = nameInput.value || "Username";
     nickName = "@" + (nickInput.value || "nickname");
     el.style.display = "block";
-    enterPage.style.display= "none";
+    enterPage.style.display = "none";
     let user = {
       name: userName,
       nick: nickName,
@@ -27,9 +27,12 @@
     }
     socket.emit('chat user', user);
 
-    let statusTimer = setTimeout(()=>{
+    let statusTimer = setTimeout(() => {
       clearTimeout(statusTimer);
-      let usr = {nick: nickName, status: "online"};
+      let usr = {
+        nick: nickName,
+        status: "online"
+      };
       socket.emit('chat userList', usr);
     }, 60000);
 
@@ -40,37 +43,41 @@
     socket.emit('disconnect');
   });
 
-  socket.on('chat user disconnect', (nickName)=>{
+  socket.on('chat user disconnect', (nickName) => {
     let li = document.createElement('li');
     li.innerHTML = `<span class="">${nickName} has disconnected the chat <i class="fas fa-plane-departure"></i></span>`;
     messagesList.appendChild(li);
 
-    let statusTimer = setTimeout(()=>{
+    let statusTimer = setTimeout(() => {
       clearTimeout(statusTimer);
-      let user = {nick: nickName, status:"offline" };
-      socket.emit('chat userList',user );
+      let user = {
+        nick: nickName,
+        status: "offline"
+      };
+      socket.emit('chat userList', user);
     }, 60000);
   });
 
-  text.addEventListener('keydown', function(event) {
+  text.addEventListener('keydown', function (event) {
     if (event.keyCode == 13) {
-      if (text.value.trim()){
+      event.preventDefault();
+      if (text.value.trim()) {
         let data = {
           name: userName,
           nick: nickName,
           date: Date.now(),
           text: text.value
         };
-  
+
         text.value = '';
-        
+
         socket.emit('chat message', data);
-      }  
+      }
     }
   });
 
   textSubmit.onclick = () => {
-    if (text.value.trim()){
+    if (text.value.trim()) {
       let data = {
         name: userName,
         nick: nickName,
@@ -79,7 +86,7 @@
       };
 
       text.value = '';
-      
+
       socket.emit('chat message', data);
     }
   }
@@ -87,7 +94,7 @@
   text.oninput = () => {
     socket.emit('user typing', nickName);
 
-    let typingTimer = setTimeout(()=>{
+    let typingTimer = setTimeout(() => {
       clearTimeout(typingTimer);
       socket.emit('user stop typing');
     }, 2000);
@@ -105,19 +112,19 @@
 
     messagesList.innerHTML = "";
 
-    for (let item in msg){
+    for (let item in msg) {
       let el = createMessage(msg[item]);
-      if (msg[item].text.includes(nickName)){
+      if (msg[item].text.includes(nickName)) {
         el.lastElementChild.setAttribute("class", 'message private-message');
       }
-      
+
       messagesList.appendChild(el);
     }
   });
 
   socket.on('chat userList', (users) => {
     peopleList.innerHTML = "";
-    for (let item in users){
+    for (let item in users) {
       let el = createPeople(users[item]);
       el.appendChild(addLable(users[item].status));
       peopleList.appendChild(el);
@@ -125,14 +132,14 @@
   });
 
   socket.on('chat message', (msg) => {
-      let el = createMessage(msg);
-      if (msg.text && msg.text.includes(nickName)) {
-        el.lastElementChild.setAttribute("class", 'message private-message');
-      }
-      if (msg.text && msg.text.includes("@bot")){
-        socket.emit('bot message', msg);
-      }
-      messagesList.appendChild(el);
+    let el = createMessage(msg);
+    if (msg.text && msg.text.includes(nickName)) {
+      el.lastElementChild.setAttribute("class", 'message private-message');
+    }
+    if (msg.text && msg.text.includes("@bot")) {
+      socket.emit('bot message', msg);
+    }
+    messagesList.appendChild(el);
   });
 
   socket.on('chat user', (usr) => {
@@ -189,7 +196,7 @@
   document.getElementsByClassName("chat-message")[0].insertBefore(p, document.getElementById("message-to-send"));
 
   let addTypingMsg = (nickName) => {
-    p.innerHTML = ``;  
+    p.innerHTML = ``;
     p.innerHTML = `<span>${nickName} is typing...</span>`;
   };
 
@@ -202,7 +209,7 @@
     let i = document.createElement("i");
     statusEl.classList.add("status");
     let statusClass = '';
-    switch(status){
+    switch (status) {
       case 'online':
         statusClass = 'online';
         break;
@@ -222,5 +229,4 @@
     statusEl.innerHTML += status;
     return statusEl;
   };
-}
-)();
+})();
