@@ -91,8 +91,11 @@ function checkText(text) {
 }
 
 function giveAnswer(text) {
+  //Factory init
   let factory = new BotMessageFactory();
+
   let textIn = "Armed and ready!";
+
   let weatherPattern = /What is the weather (.*?) in (\w+)\?$/;
   let exchangePattern = /Convert (\d+) (\w+) to (\w+)$/;
   let noteSavePattern = /Save note title: "(.*?)" body: "(.*?)"/;
@@ -101,6 +104,7 @@ function giveAnswer(text) {
   let noteShowPattern = /Show note "(.*?)"/;
   let advicePattern = /.*?\s[\#\@\)\₴\?\$0]/;
   let quotePattern = /show quote/;
+
   if (weatherPattern.test(text)) {
     let arr = text.match(weatherPattern);
     let weather = factory.create("weather");
@@ -283,6 +287,7 @@ class Quote {
   }
 }
 
+//Factory pattern
 class BotMessageFactory {
   create(type) {
     if (type === "weather") {
