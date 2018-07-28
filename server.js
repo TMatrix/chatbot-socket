@@ -42,9 +42,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on('disconnect', () => {
-    // usersOnline.splice(usersOnline.findIndex((elem)=>{
-    // return elem.nick == socket.nick;
-    // }),1);
     usersOnline[usersOnline.findIndex((elem) => {
       return elem.nick == socket.nick;
     })].status = "just left";
@@ -94,6 +91,7 @@ function checkText(text) {
 }
 
 function giveAnswer(text) {
+  let factory = new BotMessageFactory();
   let textIn = "Armed and ready!";
   let weatherPattern = /What is the weather (.*?) in (\w+)\?$/;
   let exchangePattern = /Convert (\d+) (\w+) to (\w+)$/;
@@ -105,42 +103,50 @@ function giveAnswer(text) {
   let quotePattern = /show quote/;
   if (weatherPattern.test(text)) {
     let arr = text.match(weatherPattern);
-    textIn = new Weather(arr[2], arr[1]).getForecast();
+    let weather = factory.create("weather");
+    weather.set(arr[2], arr[1]);
+    textIn = weather.get();
   }
   if (exchangePattern.test(text)) {
     let arr = text.match(exchangePattern);
-    textIn = new Exchange(arr[1], arr[2], arr[3]).getValue();
+    let exchange = factory.create("exchange");
+    exchange.set(arr[1], arr[2], arr[3]);
+    textIn = exchange.get();
   }
 
   if (noteSavePattern.test(text)) {
-    textIn = new NoteService().set(text.match(noteSavePattern)[1].toString(), text.match(noteSavePattern)[2].toString());
+    let note = factory.create("note");
+    textIn = note.set(text.match(noteSavePattern)[1].toString(), text.match(noteSavePattern)[2].toString());
   } else if (noteListPattern.test(text)) {
-    textIn = new NoteService().getAll();
+    let note = factory.create("note");
+    textIn = note.getAll();
   } else if (noteDelPattern.test(text)) {
-    textIn = new NoteService().remove(text.match(noteDelPattern)[1].toString());
+    let note = factory.create("note");
+    textIn = note.remove(text.match(noteDelPattern)[1].toString());
   } else if (noteShowPattern.test(text)) {
-    textIn = new NoteService().get(text.match(noteShowPattern)[1].toString());
+    let note = factory.create("note");
+    textIn = note.get(text.match(noteShowPattern)[1].toString());
   }
 
   if (advicePattern.test(text)) {
-    textIn = new Advice().get();
+    let advice = factory.create("advice");
+    textIn = advice.get();
   }
 
   if (quotePattern.test(text)) {
-    textIn = new Quote().get();
+    let quote = factory.create("quote");
+    textIn = quote.get();
   }
 
   return textIn;
 }
 
 class Weather {
-
-  constructor(location, date) {
+  set(location, date) {
     this.location = location;
     this.date = date;
   }
-
-  getForecast() {
+  get() {
     let temperature = Math.round(Math.random() * 30);
     let feeling;
     if (temperature < 5) {
@@ -156,16 +162,19 @@ class Weather {
 }
 
 class Exchange {
-  constructor(amount, input, output) {
-    this.amount = amount;
-    this.input = input;
-    this.output = output;
+  constructor() {
     this.eToD = 1.172;
     this.dToH = 26.7;
     this.eToH = 31.2924;
   }
 
-  getValue() {
+  set(amount, input, output) {
+    this.amount = amount;
+    this.input = input;
+    this.output = output;
+  }
+
+  get() {
     let num = this.amount;
     if (this.input == "dollar" && this.output == "hryvnia") {
       num *= this.dToH;
@@ -271,5 +280,21 @@ class Quote {
 
   get() {
     return this.quotes[Math.round(Math.random() * 6) - 1];
+  }
+}
+
+class BotMessageFactory {
+  create(type) {
+    if (type === "weather") {
+      return new Weather();
+    } else if (type === "exchange") {
+      return new Exchange();
+    } else if (type === "note") {
+      return new NoteService();
+    } else if (type === "advice") {
+      return new Advice();
+    } else if (type === "quote") {
+      return new Quote();
+    }
   }
 }
