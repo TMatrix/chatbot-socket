@@ -80,13 +80,23 @@ http.listen(5000, () => {
 });
 
 function checkText(text) {
-  let msg = {};
-  Object.assign(msg, text);
-  msg.name = "bot";
-  msg.nick = "@bot";
-  msg.date = Date.now();
-  text = giveAnswer(msg.text);
-  msg.text = text ? text : "";
+  let msg = new Proxy(text, {
+    get: function(elem, index){
+      if(index === "name"){
+        return "bot";
+      }
+      if(index === "nick"){
+        return "@bot";
+      }
+      if(index === "date"){
+        return Date.now();
+      }
+      if(index === "text"){
+        let text = giveAnswer(elem[index]);
+        return text;
+      }
+    }
+  });
   return msg;
 }
 
