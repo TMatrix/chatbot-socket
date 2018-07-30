@@ -80,6 +80,7 @@ http.listen(5000, () => {
 });
 
 function checkText(text) {
+  //Proxy pattern
   let msg = new Proxy(text, {
     get: function(elem, index){
       if(index === "name"){

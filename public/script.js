@@ -15,9 +15,11 @@
   let socket = io.connect();
 
   enterButton.onclick = () => {
+    if (!nameInput.value && !nickInput.value)
+      return;
     let el = document.getElementsByClassName("container")[0];
-    userName = nameInput.value || "Username";
-    nickName = "@" + (nickInput.value || "nickname");
+    userName = nameInput.value;
+    nickName = "@" + (nickInput.value);
     el.style.display = "block";
     enterPage.style.display = "none";
     let user = {
